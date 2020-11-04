@@ -28,7 +28,7 @@ with open("raw_data/bmspos/assoc/BMS_ASSOC_DATA/BMS-POS.dat") as f:
             if pre != line[0]:
                 pre = line[0]
                 fw.write(" ".join(accum_line) + "\n")
-                accum_line = []
+                accum_line = [line[1]]
             else:
                 accum_line.append(line[1])
         accum_line.append(line[1])
