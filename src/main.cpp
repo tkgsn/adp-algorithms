@@ -1,7 +1,8 @@
-#include <iostream>
 #include "counter.h"
+using namespace std;
 
 int main() {
-	readTest();
+	map<string,int> count = loadToHist();
+	cout << count["1"] << endl;
 	return 0;
 }

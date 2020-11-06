@@ -1,15 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <map>
+#include "counter.h"
 using namespace std;
 
-
-void readTest() {
+map<std::string,int> loadToHist() {
   ifstream ifs("dataset/kosarak/data.txt");
   string tmp;
-  map<std::string,int> count;
+  map<string,int> count;
 
   while(getline(ifs, tmp)){
     stringstream ss;
@@ -20,6 +15,7 @@ void readTest() {
     }
   }
 
-  std::cout << "Kitty on your lap";
-  return;
+  cout << "Kitty on your lap" << endl;
+  
+  return count;
 }
