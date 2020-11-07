@@ -5,4 +5,10 @@
 #include <map>
 using namespace std;
 
-map<string,int> loadToHist();
+class Counter{
+public:
+    map<string,int> hist;
+    void loadHist(string);
+    virtual float query(string);
+    virtual float threshold_query(string, float);
+};
