@@ -11,3 +11,17 @@ BMS-POS: https://www.kdd.org/kdd-cup/view/kdd-cup-2000
 T40I10D100K: http://fimi.uantwerpen.be/data/
 
 (direct): http://fimi.uantwerpen.be/data/T40I10D100K.dat
+
+
+# How to UnitTest
+
+This uses googletest for UnitTest. Googletest requires cmake to install it.
+
+```
+git clone https://github.com/google/googletest.git
+cd googletest
+mkdir build
+cd build
+cmake ..
+make
+```
