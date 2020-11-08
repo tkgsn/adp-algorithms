@@ -20,9 +20,10 @@ float Counter::query(string index){
 }
 
 float Counter::threshold_query(string index, float threshold){
-  if(this->query(index) <= threshold){
+  float res = this->query(index);
+  if(res <= threshold){
     return 0;
   }else{
-    return this->query(index) - threshold;
+    return res - threshold;
   }
 }

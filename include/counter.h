@@ -6,8 +6,9 @@
 using namespace std;
 
 class Counter{
-public:
+private:
     map<string,int> hist;
+public:
     void loadHist(string);
     virtual float query(string);
     virtual float threshold_query(string, float);
