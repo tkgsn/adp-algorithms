@@ -1,4 +1,8 @@
+#ifndef INCLUDED_NOISY_COUNTER
+#define INCLUDED_NOISY_COUNTER
+
 #include "counter.h"
+#include "util.h"
 #include <boost/math/distributions/laplace.hpp>
 #include <boost/random.hpp>
 
@@ -17,3 +21,5 @@ public:
     float query(string) override;
     float threshold_query(string, float) override;
 };
+
+#endif

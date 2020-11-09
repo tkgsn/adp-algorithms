@@ -29,7 +29,3 @@ TEST_F(TestCounter, TestThresholdQuery){
     EXPECT_EQ(ex_0_1, 0);
     EXPECT_EQ(ex_1, 1);
 }
-
-//TEST(TestCounter, TestMaxIndex){
-//    EXPECT_EQ(ex_3, 3);
-//}
