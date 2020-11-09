@@ -1,12 +1,20 @@
 #include <gtest/gtest.h>
 #include "noisy_counter.h"
 
-TEST(TestNoisyCounter, TestQuery){
+class TestNoisyCounter : public ::testing::Test{
+protected:
     NoisyCounter noisy_counter = NoisyCounter(1, 1);
     boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2);
+    boost::random::laplace_distribution<> laplace_threshold = boost::random::laplace_distribution<>(0, 2);
     boost::random::mt19937 gen = boost::random::mt19937(0);
 	NoisyCounter counter = NoisyCounter(1, 1);
-	counter.loadHist("test");
+    
+    virtual void SetUp(){
+        counter.loadHist("test");
+    }
+};
+
+TEST_F(TestNoisyCounter, TestQuery){
     float ex_1 = counter.query("3");
     float ex_2 = counter.query("2");
     float ex_3 = counter.query("1");
@@ -17,13 +25,7 @@ TEST(TestNoisyCounter, TestQuery){
     EXPECT_FLOAT_EQ(ex_0, 0 + laplace_query(gen));
 }
 
-TEST(TestNoisyCounter, TestThresholdQuery){
-    NoisyCounter noisy_counter = NoisyCounter(1, 1);
-    boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2);
-    boost::random::laplace_distribution<> laplace_threshold = boost::random::laplace_distribution<>(0, 2);
-    boost::random::mt19937 gen = boost::random::mt19937(0);
-	NoisyCounter counter = NoisyCounter(1, 1);
-	counter.loadHist("test");
+TEST_F(TestNoisyCounter, TestThresholdQuery){
     float ex_0 = counter.threshold_query("3", 3);
     float ex_04 = counter.threshold_query("2", 3);
     laplace_threshold(gen);
