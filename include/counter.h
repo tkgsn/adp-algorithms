@@ -6,7 +6,6 @@
 #include <sstream>
 #include <string>
 #include <map>
-#include <boost/foreach.hpp>
 using namespace std;
 
 class Counter{

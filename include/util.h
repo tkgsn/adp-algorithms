@@ -3,9 +3,10 @@
 
 #include <map>
 #include <string>
-#include <boost/foreach.hpp>
+#include <vector>
 using namespace std;
 
 int max_index(map<string,int>);
+vector<string> arg_sort(map<string, int>);
 
 #endif
