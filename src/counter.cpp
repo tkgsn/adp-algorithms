@@ -27,3 +27,12 @@ float Counter::threshold_query(string index, float threshold){
     return res - threshold;
   }
 }
+
+vector<int> Counter::random_query(){
+  int max = max_index(hist);
+  vector<int> indices(max, 0);
+  iota(indices.begin(), indices.end(), 1);
+  shuffle( indices.begin(), indices.end(), e );
+  cout << indices[0] << endl;
+  return indices;
+}

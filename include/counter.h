@@ -6,11 +6,16 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <numeric>
+#include "util.h"
+#include <boost/random.hpp>
+#include <random>
 using namespace std;
 
 class Counter{
 private:
     map<string,int> hist;
+    default_random_engine e = default_random_engine(0);
 public:
     void loadHist(string);
     map<string,int> get_hist(){
@@ -18,6 +23,7 @@ public:
     };
     virtual float query(string);
     virtual float threshold_query(string, float);
+    vector<int> random_query();
 };
 
 #endif

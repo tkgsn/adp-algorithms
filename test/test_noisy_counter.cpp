@@ -6,7 +6,7 @@ protected:
     NoisyCounter noisy_counter = NoisyCounter(1, 1);
     boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2);
     boost::random::laplace_distribution<> laplace_threshold = boost::random::laplace_distribution<>(0, 2);
-    boost::random::mt19937 gen = boost::random::mt19937(0);
+    default_random_engine gen = std::default_random_engine(0);
 	NoisyCounter counter = NoisyCounter(1, 1);
     
     virtual void SetUp(){

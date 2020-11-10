@@ -29,3 +29,8 @@ TEST_F(TestCounter, TestThresholdQuery){
     EXPECT_EQ(ex_0_1, 0);
     EXPECT_EQ(ex_1, 1);
 }
+
+TEST_F(TestCounter, TestRandomQuery){
+    vector<int> queries = counter.random_query();
+    EXPECT_EQ(queries.size(), max_index(counter.get_hist()));
+}
