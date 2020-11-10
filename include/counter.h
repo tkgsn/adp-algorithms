@@ -24,6 +24,8 @@ public:
     virtual float query(string);
     virtual float threshold_query(string, float);
     vector<int> random_query();
+    int random_threshold(int);
+    map<int, float> run_sparse_vector(int);
 };
 
 #endif

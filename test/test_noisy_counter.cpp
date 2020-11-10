@@ -32,6 +32,6 @@ TEST_F(TestNoisyCounter, TestThresholdQuery){
     laplace_query(gen);
     float thre_noise = laplace_threshold(gen);
     float query_noise = laplace_query(gen);
-    EXPECT_NEAR(ex_0, 0, 1e-5);
+    EXPECT_NEAR(ex_0, -1, 1e-5);
     EXPECT_NEAR(ex_04, 2 + query_noise - 3 - thre_noise, 1e-5);
 }

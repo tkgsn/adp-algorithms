@@ -3,7 +3,6 @@
 
 #include "counter.h"
 #include "util.h"
-#include <boost/math/distributions/laplace.hpp>
 using namespace std;
 
 class NoisyCounter : public Counter{

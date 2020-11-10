@@ -10,6 +10,15 @@ protected:
     }
 };
 
+class TestCounter2 : public ::testing::Test{
+protected:
+    Counter counter = Counter();
+    
+    virtual void SetUp(){
+        counter.loadHist("test2");
+    }
+};
+
 TEST_F(TestCounter, TestloadHist){
     float ex_1 = counter.query("3");
     float ex_2 = counter.query("2");
@@ -25,12 +34,36 @@ TEST_F(TestCounter, TestThresholdQuery){
     float ex_0_0 = counter.threshold_query("1", 3);
     float ex_0_1 = counter.threshold_query("1", 4);
     float ex_1 = counter.threshold_query("1", 2);
-    EXPECT_EQ(ex_0_0, 0);
-    EXPECT_EQ(ex_0_1, 0);
+    EXPECT_EQ(ex_0_0, -1);
+    EXPECT_EQ(ex_0_1, -1);
     EXPECT_EQ(ex_1, 1);
 }
 
 TEST_F(TestCounter, TestRandomQuery){
     vector<int> queries = counter.random_query();
     EXPECT_EQ(queries.size(), max_index(counter.get_hist()));
+}
+
+
+TEST_F(TestCounter2, TestRandomThreshold){
+    auto in_range = [](int i) {
+        if (i >= 4 && i <= 16){
+            return true;
+        }else{
+            return false;
+        }
+        
+    };
+    for(int i=0; i<100; i++){
+        int threshold = counter.random_threshold(2);
+        EXPECT_PRED1(in_range, threshold);
+    };
+}
+
+TEST_F(TestCounter2, TestRunSparseVector){
+    map<int, float> res = counter.run_sparse_vector(2);
+    EXPECT_FLOAT_EQ(res[2], 0);
+    EXPECT_FLOAT_EQ(res[3], -1);
+    EXPECT_FLOAT_EQ(res[15], 2);
+    EXPECT_FLOAT_EQ(res[20], 7);
 }
