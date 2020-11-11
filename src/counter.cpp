@@ -41,6 +41,7 @@ int Counter::random_threshold(int k){
   vector<string> sorted = arg_sort(hist);
   uniform_int_distribution<> uni_dis(2 * k, 8 * k);
   int sampled = uni_dis(e);
+  choosed_k = sampled;
   return hist[sorted[sampled]];
 }
 
@@ -61,4 +62,46 @@ map<int, float> Counter::run_sparse_vector(int k){
     }
 
     return res;
+}
+
+float Counter::evaluate_precision(map<int, float> res){
+  vector<string> sorted = arg_sort(hist);
+
+  pair<int, float> temp;
+  int counter = 0;
+  int right_counter = 0;
+
+  BOOST_FOREACH (temp, res){
+    if (temp.second == -1 || temp.second == 0) {
+      continue;
+    }
+    counter += 1;
+    if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+      right_counter += 1;
+    }
+  }
+  return float(right_counter) / counter ;
+}
+
+float Counter::evaluate_recall(map<int, float> res){
+  vector<string> sorted = arg_sort(hist);
+
+  pair<int, float> temp;
+  int right_counter = 0;
+
+  BOOST_FOREACH (temp, res){
+    if (temp.second == -1 || temp.second == 0) {
+      continue;
+    }
+    if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+      right_counter += 1;
+    }
+  }
+  return float(right_counter) / choosed_k;
+}
+
+float Counter::evaluate_f_value(map<int, float> res){
+  float precision = Counter::evaluate_precision(res);
+  float recall = Counter::evaluate_recall(res);
+  return 1./( (1./2) * (1./precision + 1./recall) );
 }
