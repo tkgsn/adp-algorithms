@@ -3,11 +3,11 @@
 
 class TestNoisyCounter : public ::testing::Test{
 protected:
-    NoisyCounter noisy_counter = NoisyCounter(1, 1);
-    boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2);
+    int k = 2;
+    boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2 * k);
     boost::random::laplace_distribution<> laplace_threshold = boost::random::laplace_distribution<>(0, 2);
     default_random_engine gen = std::default_random_engine(0);
-	NoisyCounter counter = NoisyCounter(1, 1);
+	NoisyCounter counter = NoisyCounter(1, 1, k);
     
     virtual void SetUp(){
         counter.loadHist("test");
@@ -26,12 +26,13 @@ TEST_F(TestNoisyCounter, TestQuery){
 }
 
 TEST_F(TestNoisyCounter, TestThresholdQuery){
-    float ex_0 = counter.threshold_query("3", 3);
-    float ex_04 = counter.threshold_query("2", 3);
+    int threshold = 6;
+    float ex_0 = counter.threshold_query("1", threshold);
+    float ex_04 = counter.threshold_query("3", threshold);
     laplace_threshold(gen);
     laplace_query(gen);
     float thre_noise = laplace_threshold(gen);
     float query_noise = laplace_query(gen);
     EXPECT_NEAR(ex_0, -1, 1e-5);
-    EXPECT_NEAR(ex_04, 2 + query_noise - 3 - thre_noise, 1e-5);
+    EXPECT_NEAR(ex_04, 1 + query_noise - threshold - thre_noise, 1e-5);
 }

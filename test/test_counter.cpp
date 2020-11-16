@@ -3,7 +3,7 @@
 
 class TestCounter : public ::testing::Test{
 protected:
-    Counter counter = Counter();
+    Counter counter = Counter(2);
     
     virtual void SetUp(){
         counter.loadHist("test");
@@ -12,7 +12,7 @@ protected:
 
 class TestCounter2 : public ::testing::Test{
 protected:
-    Counter counter = Counter();
+    Counter counter = Counter(2);
     
     virtual void SetUp(){
         counter.loadHist("test2");
@@ -55,13 +55,13 @@ TEST_F(TestCounter2, TestRandomThreshold){
         
     };
     for(int i=0; i<100; i++){
-        int threshold = counter.random_threshold(2);
+        int threshold = counter.random_threshold();
         EXPECT_PRED1(in_range, threshold);
     };
 }
 
 TEST_F(TestCounter2, TestRunSparseVector){
-    map<int, float> res = counter.run_sparse_vector(2);
+    map<int, float> res = counter.run_sparse_vector();
     EXPECT_FLOAT_EQ(res[2], 0);
     EXPECT_FLOAT_EQ(res[3], -1);
     EXPECT_FLOAT_EQ(res[15], 2);
@@ -69,8 +69,7 @@ TEST_F(TestCounter2, TestRunSparseVector){
 }
 
 TEST_F(TestCounter2, TestEvaluatePrecision){
-    int k = 2;
-    map<int, float> res = counter.run_sparse_vector(k);
+    map<int, float> res = counter.run_sparse_vector();
     float result = counter.evaluate_precision(res);
     EXPECT_FLOAT_EQ(result, 1);
 
@@ -80,8 +79,7 @@ TEST_F(TestCounter2, TestEvaluatePrecision){
 }
 
 TEST_F(TestCounter2, TestEvaluateRecall){
-    int k = 2;
-    map<int, float> res = counter.run_sparse_vector(k);
+    map<int, float> res = counter.run_sparse_vector();
     float result = counter.evaluate_recall(res);
     EXPECT_FLOAT_EQ(result, 2./7);
 
@@ -96,8 +94,7 @@ TEST_F(TestCounter2, TestEvaluateRecall){
 }
 
 TEST_F(TestCounter2, TestEvaluateFValue){
-    int k = 2;
-    map<int, float> res = counter.run_sparse_vector(k);
+    map<int, float> res = counter.run_sparse_vector();
     float result = counter.evaluate_f_value(res);
     EXPECT_FLOAT_EQ(result, 1. / ((1./2) * (1./1 + 1./ (2./7) )) );
 

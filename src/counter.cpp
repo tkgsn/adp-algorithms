@@ -1,5 +1,6 @@
 #include "counter.h"
 #include <boost/foreach.hpp>
+#include <limits>
 using namespace std;
 
 void Counter::loadHist(string dataname){
@@ -14,6 +15,8 @@ void Counter::loadHist(string dataname){
       hist[tmp] += 1;
     }
   }
+
+  sorted = arg_sort(hist);
 }
 
 float Counter::query(string index){
@@ -37,36 +40,44 @@ vector<int> Counter::random_query(){
   return indices;
 }
 
-int Counter::random_threshold(int k){
-  vector<string> sorted = arg_sort(hist);
+int Counter::random_threshold(){
   uniform_int_distribution<> uni_dis(2 * k, 8 * k);
   int sampled = uni_dis(e);
   choosed_k = sampled;
   return hist[sorted[sampled]];
 }
 
-map<int, float> Counter::run_sparse_vector(int k){
+map<int, float> Counter::run_sparse_vector(){
     vector<int> queries = Counter::random_query();
-    float threshold = Counter::random_threshold(k);
+    float threshold = Counter::random_threshold();
     int index;
-    int counter = 0;
     map<int, float> res;
 
     BOOST_FOREACH (index, queries) {
-        float queried = this->threshold_query(to_string(index), threshold);
-        if(queried != -1){
-          counter += 1;
-        }
-        res[index] = queried;
-        if (counter == k) break;
+      float queried = this->threshold_query(to_string(index), threshold);
+      this->sum_budget(queried);
+      if(judge_budget()) break;
+      res[index] = queried;
     }
 
     return res;
 }
 
-float Counter::evaluate_precision(map<int, float> res){
-  vector<string> sorted = arg_sort(hist);
+void Counter::sum_budget(float queried){
+  if(queried != -1){
+    budget += epsilon_query / k;
+  }
+}
 
+bool Counter::judge_budget(){
+  if(budget > epsilon_query){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+float Counter::evaluate_precision(map<int, float> res){
   pair<int, float> temp;
   int counter = 0;
   int right_counter = 0;
@@ -84,8 +95,6 @@ float Counter::evaluate_precision(map<int, float> res){
 }
 
 float Counter::evaluate_recall(map<int, float> res){
-  vector<string> sorted = arg_sort(hist);
-
   pair<int, float> temp;
   int right_counter = 0;
 
