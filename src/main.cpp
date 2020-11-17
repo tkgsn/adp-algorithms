@@ -4,7 +4,10 @@ using namespace std;
 
 int main() {
 	tuple<float, float, float> t;
-	AdaptiveNoisyCounter counter = AdaptiveNoisyCounter(1, 1, 5);
+	float epsilon = 0.7;
+	int k = 15;
+	pair<float, float> epsilons = split_epsilon(epsilon, k);
+	AdaptiveNoisyCounter counter = AdaptiveNoisyCounter(epsilons.second, epsilons.second, 15);
 	counter.loadHist("kosarak");
 	int n_iter = 100;
 	for(int i=0; i<n_iter; i++){

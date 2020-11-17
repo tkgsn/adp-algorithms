@@ -6,6 +6,7 @@
 #include <numeric>
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -34,4 +35,9 @@ vector<string> arg_sort(map<string, int> dict){
 
     sort(indices.begin(), indices.end(), [&dict](string i1, string i2){return dict[i1] > dict[i2];});
     return indices;
+}
+
+pair<float, float> split_epsilon(float epsilon, int k){
+    float theta = 1. / (1 + std::pow(k, 2./3.));
+    return make_pair(epsilon * theta, epsilon * (1 - theta));
 }

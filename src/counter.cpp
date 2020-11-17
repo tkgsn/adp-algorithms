@@ -15,7 +15,6 @@ void Counter::loadHist(string dataname){
       hist[tmp] += 1;
     }
   }
-
   sorted = arg_sort(hist);
 }
 
@@ -50,6 +49,7 @@ int Counter::random_threshold(){
 map<int, float> Counter::run_sparse_vector(){
     vector<int> queries = Counter::random_query();
     float threshold = Counter::random_threshold();
+    this->budget = 0;
     int index;
     map<int, float> res;
 
