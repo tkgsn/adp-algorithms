@@ -48,7 +48,7 @@ TEST_F(TestAdaptiveNoisyCounter, TestThresholdQuery){
     laplace_threshold(gen);
     laplace_query(gen);
     float ex_04 = counter.threshold_query("4", -2);
-    float query_noise = bigger_laplace_query(gen);
+    bigger_laplace_query(gen);
     float thre_noise = laplace_threshold(gen);
     float query_noise2 = laplace_query(gen);
     EXPECT_NEAR(ex_0, -1, 1e-5);

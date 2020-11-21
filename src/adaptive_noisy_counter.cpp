@@ -2,7 +2,7 @@
 using namespace std;
 
 float AdaptiveNoisyCounter::bigger_query(string index){
-    return Counter::query(index) + bigger_laplace_query(gen);
+    return Counter::query(index) + this->bigger_laplace_query(gen);
 }
 
 float AdaptiveNoisyCounter::threshold_query(string index, float threshold){

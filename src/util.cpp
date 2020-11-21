@@ -7,6 +7,9 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <functional>
+#include <boost/random.hpp>
+#include <random>
 
 using namespace std;
 
@@ -40,4 +43,27 @@ vector<string> arg_sort(map<string, int> dict){
 pair<float, float> split_epsilon(float epsilon, int k){
     float theta = 1. / (1 + std::pow(k, 2./3.));
     return make_pair(epsilon * theta, epsilon * (1 - theta));
+}
+
+std::function<float(default_random_engine&)> make_zero_noise(){
+    std::function<float(default_random_engine&)> f = [](default_random_engine& gen){
+        return 0;
+        };
+    return f;
+}
+
+std::function<float(default_random_engine&)> make_laplace(float epsilon, int k){
+    boost::random::laplace_distribution<> laplace = boost::random::laplace_distribution<>(0, k * 2 / epsilon);
+    std::function<float(default_random_engine&)> f = [=](default_random_engine& gen){
+        return laplace(gen);
+        };
+    return f;
+}
+
+std::function<float(default_random_engine&)> make_onesided_laplace(float epsilon, int k){
+    boost::random::laplace_distribution<> laplace = boost::random::laplace_distribution<>(0, k / epsilon);
+    std::function<float(default_random_engine&)> f = [=](default_random_engine& gen){
+        return std::abs(laplace(gen));
+        };
+    return f;
 }

@@ -7,15 +7,15 @@ using namespace std;
 
 class NoisyCounter : public Counter{
 protected:
-    boost::random::laplace_distribution<> laplace_query;
-    boost::random::laplace_distribution<> laplace_threshold;
+    std::function<float(default_random_engine&)> laplace_query;
+    std::function<float(default_random_engine&)> laplace_threshold;
     default_random_engine gen = std::default_random_engine(0);
 
 public:
     NoisyCounter(float epsilon_query, float epsilon_threshold, int k, int seed=0): Counter(k){
         this->epsilon_query = epsilon_query;
-        laplace_query = boost::random::laplace_distribution<>(0, 2*k/epsilon_query);
-        laplace_threshold = boost::random::laplace_distribution<>(0, 2/epsilon_threshold);
+        laplace_query = make_laplace(epsilon_query, k);
+        laplace_threshold = make_laplace(epsilon_threshold, 1);
     };
     float query(string) override;
     float threshold_query(string, float) override;

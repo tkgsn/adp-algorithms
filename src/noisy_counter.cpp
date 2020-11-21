@@ -2,7 +2,7 @@
 using namespace std;
 
 float NoisyCounter::query(string index){
-    return Counter::query(index) + laplace_query(gen);
+    return Counter::query(index) + this->laplace_query(gen);
 }
 
 float NoisyCounter::threshold_query(string index, float threshold){
