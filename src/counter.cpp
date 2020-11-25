@@ -1,5 +1,4 @@
 #include "counter.h"
-#include <boost/foreach.hpp>
 #include <limits>
 using namespace std;
 
@@ -48,7 +47,7 @@ int Counter::random_threshold(){
 
 map<int, float> Counter::run_sparse_vector(){
     vector<int> queries = Counter::random_query();
-    float threshold = Counter::random_threshold();
+    threshold = this->random_threshold();
     this->budget = 0;
     int index;
     map<int, float> res;
@@ -56,7 +55,7 @@ map<int, float> Counter::run_sparse_vector(){
     BOOST_FOREACH (index, queries) {
       float queried = this->threshold_query(to_string(index), threshold);
       this->sum_budget(queried);
-      if(judge_budget()) break;
+      if(this->judge_budget()) break;
       res[index] = queried;
     }
 
@@ -64,17 +63,25 @@ map<int, float> Counter::run_sparse_vector(){
 }
 
 void Counter::sum_budget(float queried){
-  if(queried != -1){
-    budget += epsilon_query / k;
-  }
 }
 
 bool Counter::judge_budget(){
-  if(budget > epsilon_query){
-    return true;
-  }else{
-    return false;
-  }
+  return false;
+}
+
+float Counter::compute_mean_squared_error(map<int, float> measured){
+    pair<int, float> temp;
+    int counter = 0;
+    float res = 0;
+
+    BOOST_FOREACH (temp, measured) {
+      counter += 1;
+      float accurate = Counter::query(to_string(temp.first));
+      float mse = std::pow(temp.second - accurate, 2);
+      res += mse;
+    }
+
+    return res / counter;
 }
 
 float Counter::evaluate_precision(map<int, float> res){
@@ -88,6 +95,7 @@ float Counter::evaluate_precision(map<int, float> res){
     }
     counter += 1;
     if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+    //if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
       right_counter += 1;
     }
   }
@@ -103,6 +111,7 @@ float Counter::evaluate_recall(map<int, float> res){
       continue;
     }
     if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+    //if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
       right_counter += 1;
     }
   }

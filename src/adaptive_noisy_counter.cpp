@@ -21,7 +21,7 @@ void AdaptiveNoisyCounter::sum_budget(float queried){
     if(queried == -1){
         return;
     }else if(queried >= sigma){
-        budget += bigger_epsilon;
+        budget += bigger_epsilon / k;
     }else{
         budget += epsilon_query / k;
     }

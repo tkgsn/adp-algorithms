@@ -62,7 +62,7 @@ TEST_F(TestCounter2, TestRandomThreshold){
 
 TEST_F(TestCounter2, TestRunSparseVector){
     map<int, float> res = counter.run_sparse_vector();
-    EXPECT_FLOAT_EQ(res[2], 0);
+    EXPECT_FLOAT_EQ(res[2], -1);
     EXPECT_FLOAT_EQ(res[3], -1);
     EXPECT_FLOAT_EQ(res[15], 2);
     EXPECT_FLOAT_EQ(res[20], 7);
@@ -75,35 +75,26 @@ TEST_F(TestCounter2, TestEvaluatePrecision){
 
     res[2] = 5;
     float result2 = counter.evaluate_precision(res);
-    EXPECT_FLOAT_EQ(result2, 2./3.);
+    EXPECT_FLOAT_EQ(result2, 7./8.);
 }
 
 TEST_F(TestCounter2, TestEvaluateRecall){
     map<int, float> res = counter.run_sparse_vector();
     float result = counter.evaluate_recall(res);
-    EXPECT_FLOAT_EQ(result, 2./7);
+    EXPECT_FLOAT_EQ(result, 1);
 
     res[2] = 5;
     float result2 = counter.evaluate_recall(res);
-    EXPECT_FLOAT_EQ(result2, 2./7);
+    EXPECT_FLOAT_EQ(result2, 1);
 
 
-    res[19] = 5;
+    res[19] = -1;
     float result3 = counter.evaluate_recall(res);
-    EXPECT_FLOAT_EQ(result3, 3./7);
+    EXPECT_FLOAT_EQ(result3, 6./7.);
 }
 
 TEST_F(TestCounter2, TestEvaluateFValue){
     map<int, float> res = counter.run_sparse_vector();
     float result = counter.evaluate_f_value(res);
-    EXPECT_FLOAT_EQ(result, 1. / ((1./2) * (1./1 + 1./ (2./7) )) );
-
-    res[2] = 5;
-    float result2 = counter.evaluate_f_value(res);
-    EXPECT_FLOAT_EQ(result2, 1. / ((1./2) * (1./ (2./3) + 1./ (2./7) )) );
-
-
-    res[19] = 5;
-    float result3 = counter.evaluate_f_value(res);
-    EXPECT_FLOAT_EQ(result3, 1. / ((1./2) * (1./ (3./4.) + 1./ (3./7) )) );
+    EXPECT_FLOAT_EQ(result, 1 );
 }

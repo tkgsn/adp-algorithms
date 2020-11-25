@@ -14,6 +14,19 @@ protected:
     }
 };
 
+class TestNoisyCounter2 : public ::testing::Test{
+protected:
+    int k = 2;
+    boost::random::laplace_distribution<> laplace_query = boost::random::laplace_distribution<>(0, 2 * k);
+    boost::random::laplace_distribution<> laplace_threshold = boost::random::laplace_distribution<>(0, 2);
+    default_random_engine gen = std::default_random_engine(0);
+	NoisyCounter counter = NoisyCounter(1, 1, k);
+    
+    virtual void SetUp(){
+        counter.loadHist("test2");
+    }
+};
+
 TEST_F(TestNoisyCounter, TestQuery){
     float ex_1 = counter.query("3");
     float ex_2 = counter.query("2");
@@ -35,4 +48,11 @@ TEST_F(TestNoisyCounter, TestThresholdQuery){
     float query_noise = laplace_query(gen);
     EXPECT_NEAR(ex_0, -1, 1e-5);
     EXPECT_NEAR(ex_04, 1 + query_noise - threshold - thre_noise, 1e-5);
+}
+
+TEST_F(TestNoisyCounter2, TestThresholdQuery){
+    map<int, float> res = counter.run_sparse_vector();
+    map<int, float> measured = counter.measure(res, 0.35);
+    cout << counter.compute_mean_squared_error(measured) << endl;
+
 }
