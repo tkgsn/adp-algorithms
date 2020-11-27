@@ -10,21 +10,23 @@ protected:
     std::function<float(default_random_engine&)> laplace_query;
     std::function<float(default_random_engine&)> laplace_threshold;
     default_random_engine gen = std::default_random_engine(0);
+    map<int, float> used_budget;
     float epsilon_threshold;
     float epsilon_query;
 
 public:
-    NoisyCounter(float epsilon_query, float epsilon_threshold, int k, int seed=0): Counter(k){
-        this->epsilon_query = epsilon_query;
-        this->epsilon_threshold = epsilon_threshold;
+    NoisyCounter(float epsilon, int k, int seed=0): Counter(k){
+        pair<float, float> splitted_epsilon = split_epsilon(epsilon, k);
+        this->epsilon_query = splitted_epsilon.second;
+        this->epsilon_threshold = splitted_epsilon.first;
         laplace_query = make_laplace(epsilon_query, k);
         laplace_threshold = make_laplace(epsilon_threshold, 1);
     };
-    map<int, float> measure(map<int, float>, float);
+    virtual map<int, float> measure(map<int, float>, float);
     map<int, float> measure_w_free_gap(map<int, float>, float);
     float query(string) override;
     float threshold_query(string, float) override;
-    void sum_budget(float) override;
+    void sum_budget(int, float) override;
     bool judge_budget() override;
 };
 
