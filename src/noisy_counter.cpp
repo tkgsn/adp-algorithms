@@ -19,8 +19,6 @@ map<int, float> NoisyCounter::measure(map<int, float> res, float epsilon){
       continue;
     }
     float measured = this->query(to_string(temp.first));
-    //cout << " " + to_string(measured);
-    //cout << " " + to_string(accurate) << endl;
     measured_dict[temp.first] = measured;
   }
 
@@ -32,7 +30,6 @@ map<int, float> NoisyCounter::measure(map<int, float> res, float epsilon){
 map<int, float> NoisyCounter::measure_w_free_gap(map<int, float> res, float epsilon){
   pair<int, float> temp;
 
-  float var_gamma = 8 * std::pow(1 + std::pow(k, 2./3.), 3) / (this->epsilon_query * this->epsilon_query);
   float var_alpha = 8 * k * k / (epsilon * epsilon);
 
   this->laplace_query = make_laplace(epsilon, k);
@@ -44,10 +41,8 @@ map<int, float> NoisyCounter::measure_w_free_gap(map<int, float> res, float epsi
       continue;
     }
     float measured = this->query(to_string(temp.first));
+    float var_gamma = 8 * std::pow(1 + std::pow(k, 2./3.), 3) / (used_budget[temp.first] * used_budget[temp.first]);
     float estimated = ( (measured / var_alpha) + (temp.second + threshold) / var_gamma ) / ( 1 / var_alpha + 1 / var_gamma );
-    //cout << estimated;
-    //cout << " " + to_string(measured);
-    //cout << " " + to_string(accurate) << endl;
     measured_dict[temp.first] = estimated;
   }
 
@@ -56,8 +51,9 @@ map<int, float> NoisyCounter::measure_w_free_gap(map<int, float> res, float epsi
   return measured_dict;
 }
 
-void NoisyCounter::sum_budget(float queried){
+void NoisyCounter::sum_budget(int index, float queried){
   if(queried != -1){
+    used_budget[index] = epsilon_query; 
     budget += epsilon_query / k;
   }
 }

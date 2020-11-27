@@ -22,7 +22,7 @@ protected:
 private:
     map<string,int> hist;
     vector<string> sorted;
-    virtual void sum_budget(float);
+    virtual void sum_budget(int, float);
     virtual bool judge_budget();
     default_random_engine e = default_random_engine(0);
 public:

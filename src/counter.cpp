@@ -54,15 +54,14 @@ map<int, float> Counter::run_sparse_vector(){
 
     BOOST_FOREACH (index, queries) {
       float queried = this->threshold_query(to_string(index), threshold);
-      this->sum_budget(queried);
+      this->sum_budget(index, queried);
       if(this->judge_budget()) break;
       res[index] = queried;
     }
-
     return res;
 }
 
-void Counter::sum_budget(float queried){
+void Counter::sum_budget(int index, float queried){
 }
 
 bool Counter::judge_budget(){

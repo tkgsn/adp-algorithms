@@ -17,12 +17,14 @@ float AdaptiveNoisyCounter::threshold_query(string index, float threshold){
     }
 }
 
-void AdaptiveNoisyCounter::sum_budget(float queried){
+void AdaptiveNoisyCounter::sum_budget(int index, float queried){
     if(queried == -1){
         return;
     }else if(queried >= sigma){
+        used_budget[index] = bigger_epsilon;
         budget += bigger_epsilon / k;
     }else{
+        used_budget[index] = epsilon_query;
         budget += epsilon_query / k;
     }
 }

@@ -1,5 +1,9 @@
 # svtwgap
 
+This uses the JSON library: https://github.com/nlohmann/json
+
+# Dataset
+
 kosarak: http://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
 
 (direct): http://www.philippe-fournier-viger.com/spmf/datasets/kosarak_sequences.txt

@@ -65,6 +65,4 @@ TEST_F(TestAdaptiveNoisyCounter2, TestRunSparseVector){
 TEST_F(TestAdaptiveNoisyCounter2, TestThresholdQuery){
     map<int, float> res = counter.run_sparse_vector();
     map<int, float> measured = counter.measure(res, 0.35);
-    cout << counter.compute_mean_squared_error(measured) << endl;
-
 }
