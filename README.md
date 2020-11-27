@@ -17,6 +17,10 @@ T40I10D100K: http://fimi.uantwerpen.be/data/
 (direct): http://fimi.uantwerpen.be/data/T40I10D100K.dat
 
 
+# Install
+
+`pip install pathlib`
+
 # How to UnitTest
 
 This uses googletest for UnitTest. Googletest requires cmake to install it.
