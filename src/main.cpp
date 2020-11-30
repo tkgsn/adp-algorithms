@@ -3,10 +3,12 @@
 #include "onesided_adaptive_noisy_counter.h"
 #include <boost/foreach.hpp>
 #include <json.h>
+#include <iomanip>
 using namespace std;
 
+
 template<class COUNTER>
-void run(string alg, std::vector<float> epsilons){
+void run(string alg, string db, std::vector<float> epsilons){
 
 	BOOST_FOREACH(float epsilon, epsilons){
 
@@ -16,7 +18,7 @@ void run(string alg, std::vector<float> epsilons){
 		int k = 15;
 		float epsilon_for_svt;
 		float epsilon_for_measure = epsilon / 2;
-		int n_iter = 100;
+		int n_iter = 10000;
 
 		if (alg == "onesided"){
 			epsilon_for_svt = epsilon;
@@ -26,7 +28,7 @@ void run(string alg, std::vector<float> epsilons){
 
 
 		COUNTER counter = COUNTER(epsilon_for_svt, k, ratio_of_bigger_epsilon);
-		counter.loadHist("kosarak");
+		counter.loadHist(db);
 		nlohmann::json out_j;
 
 		for(int i=0; i<n_iter; i++){
@@ -58,7 +60,7 @@ void run(string alg, std::vector<float> epsilons){
 			out_j[to_string(i)] = in_j;
 		}
 
-		std::ofstream o("result/" + alg + "_epsilon" + to_string(epsilon) + ".json");
+		std::ofstream o("result/" + alg + "_" + db + "_epsilon" + to_string(epsilon) + ".json");
 		o << std::setw(4) << out_j << endl;
 		cout << std::get<0>(t) << endl;
 		cout << std::get<1>(t) << endl;
@@ -70,12 +72,13 @@ void run(string alg, std::vector<float> epsilons){
 
 int main(int argc, char *argv[]) {
 	string alg = argv[1];
+	string db = argv[2];
 
 	const std::vector<float> epsilons{0.1, 0.3, 0.5, 0.7, 1};
 
 	if (alg == "onesided"){
-		run<OnesidedAdaptiveNoisyCounter>(alg, epsilons);
+		run<OnesidedAdaptiveNoisyCounter>(alg, db, epsilons);
 	}else if (alg == "adaptive"){
-		run<AdaptiveNoisyCounter>(alg, epsilons);
+		run<AdaptiveNoisyCounter>(alg, db, epsilons);
 	}
 }

@@ -1,6 +1,7 @@
 #ifndef INCLUDED_UTIL
 #define INCLUDED_UTIL
 
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
