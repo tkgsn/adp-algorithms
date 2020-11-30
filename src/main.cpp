@@ -2,6 +2,7 @@
 #include "util.h"
 #include "onesided_adaptive_noisy_counter.h"
 #include <boost/foreach.hpp>
+#include <iomanip>
 #include <json.h>
 #include <iomanip>
 using namespace std;

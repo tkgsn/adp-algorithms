@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <functional>
 using namespace std;
 
 int max_index(map<string,int>);
