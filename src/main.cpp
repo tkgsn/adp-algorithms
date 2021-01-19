@@ -1,15 +1,63 @@
 #include "noisy_counter.h"
 #include "util.h"
 #include "onesided_adaptive_noisy_counter.h"
+#include "onesided_noisy_counter.h"
 #include <boost/foreach.hpp>
 #include <iomanip>
 #include <json.h>
 #include <iomanip>
 using namespace std;
 
+template<class COUNTER>
+void run_rnam(string mec, string alg, string db, std::vector<float> epsilons){
+	BOOST_FOREACH(float epsilon, epsilons){
+
+		tuple<float, float, float, float> t;
+
+		cout << "epsilon:" << "\t" << epsilon << endl;
+
+		if (alg == "onesided"){
+			epsilon = epsilon;
+		}else{
+			epsilon = epsilon / 2;
+		}
+
+		int k = 100;
+		int n_iter = 2;
+		COUNTER counter = COUNTER(epsilon, k, true);
+		counter.set_k(k);
+		counter.loadHist(db);
+		nlohmann::json out_j;
+
+		for(int i=0; i<n_iter; i++){
+			nlohmann::json in_j;
+			map<int, float> res = counter.report_noisy_k_max();
+			map<int, float> measured = counter.measure_rnam_w_free_gap(res, epsilon);
+
+			float error = counter.compute_mean_squared_error(measured);
+			float precision = counter.evaluate_precision(res);
+			float recall = counter.evaluate_recall(res);
+			float f_value = counter.evaluate_f_value(res);
+			cout << error << "\t" << precision << "\t" << recall << "\t" << f_value << endl;
+
+			std::get<0>(t) += precision / n_iter;
+			std::get<1>(t) += recall / n_iter;
+			std::get<2>(t) += f_value / n_iter;
+			std::get<3>(t) += error / n_iter;
+
+			in_j["error"] = error;
+			in_j["precision"] = precision;
+			in_j["recall"] = recall;
+			in_j["f_value"] = f_value;
+
+			out_j[to_string(i)] = in_j;
+		}
+	std::ofstream o("result/" + mec + "_" + alg + "_" + db + "_epsilon" + to_string(epsilon) + ".json");
+	}
+}
 
 template<class COUNTER>
-void run(string alg, string db, std::vector<float> epsilons){
+void run_svt(string mec, string alg, string db, std::vector<float> epsilons){
 
 	BOOST_FOREACH(float epsilon, epsilons){
 
@@ -61,7 +109,7 @@ void run(string alg, string db, std::vector<float> epsilons){
 			out_j[to_string(i)] = in_j;
 		}
 
-		std::ofstream o("result/" + alg + "_" + db + "_epsilon" + to_string(epsilon) + ".json");
+		std::ofstream o("result/" + mec + "_" + alg + "_" + db + "_epsilon" + to_string(epsilon) + ".json");
 		o << std::setw(4) << out_j << endl;
 		cout << std::get<0>(t) << endl;
 		cout << std::get<1>(t) << endl;
@@ -74,12 +122,38 @@ void run(string alg, string db, std::vector<float> epsilons){
 int main(int argc, char *argv[]) {
 	string alg = argv[1];
 	string db = argv[2];
+	string mec = argv[3];
 
 	const std::vector<float> epsilons{0.1, 0.3, 0.5, 0.7, 1};
 
-	if (alg == "onesided"){
-		run<OnesidedAdaptiveNoisyCounter>(alg, db, epsilons);
-	}else if (alg == "adaptive"){
-		run<AdaptiveNoisyCounter>(alg, db, epsilons);
+	if (mec == "svt"){
+		if (alg == "onesided"){
+			run_svt<OnesidedAdaptiveNoisyCounter>(mec, alg, db, epsilons);
+		}else if (alg == "adaptive"){
+			run_svt<AdaptiveNoisyCounter>(mec, alg, db, epsilons);
+		}
+	}else if (mec == "rnam"){
+		if (alg == "onesided"){
+			run_rnam<OnesidedNoisyCounter>(mec, alg, db, epsilons);
+		}else if (alg == "adaptive"){
+			run_rnam<NoisyCounter>(mec, alg, db, epsilons);
+		}
 	}
+}
+
+
+void main_(int argc, char *argv[]) {
+	float epsilon = 10;
+	int k = 10;
+	//NoisyCounter counter = NoisyCounter(epsilon, k, true);
+	OnesidedNoisyCounter counter = OnesidedNoisyCounter(epsilon, k, true);
+	counter.loadHist("kosarak");
+	map<int, float> res = counter.report_noisy_k_max();
+	//map<int, float> measured = counter.measure_rnam_w_free_gap(res, epsilon);
+	map<int, float> measured = counter.measure_rnam_w_free_gap(res, epsilon);
+
+	pair<int, float> me;
+    BOOST_FOREACH (me, measured) {
+        cout << me.first << "\t" << me.second << "\t" << counter.get_hist()[to_string(me.first)] << endl;
+    }
 }

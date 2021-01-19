@@ -15,6 +15,11 @@ void Counter::loadHist(string dataname){
     }
   }
   sorted = arg_sort(hist);
+  size = max_index(hist);
+
+  for(int i=0; i<size; i++){
+    queries.push_back(i);
+  }
 }
 
 float Counter::query(string index){
@@ -45,20 +50,45 @@ int Counter::random_threshold(){
   return hist[sorted[sampled]];
 }
 
-map<int, float> Counter::run_sparse_vector(){
-    vector<int> queries = Counter::random_query();
-    threshold = this->random_threshold();
-    this->budget = 0;
-    int index;
-    map<int, float> res;
+map<int, float> Counter::report_noisy_k_max(){
 
-    BOOST_FOREACH (index, queries) {
-      float queried = this->threshold_query(to_string(index), threshold);
-      this->sum_budget(index, queried);
-      if(this->judge_budget()) break;
-      res[index] = queried;
-    }
-    return res;
+  map<int, float> res;
+  int index;
+
+  BOOST_FOREACH(index, queries){
+    float queried = this->query(to_string(index));
+    res[index] = queried;
+  }
+
+  map<int, float> res_topk = this->top_k(res);
+  return res_topk;
+}
+
+map<int, float> Counter::top_k(map<int, float> result){
+  sort(queries.begin(), queries.end(), [&result](int i1, int i2){return result[i1] > result[i2];});
+  map<int, float> res_topk;
+  for(int i=0; i<k; i++){
+    int index = queries[i];
+    int next_index = queries[i+1];
+    res_topk[index] = result[index] - result[next_index];
+  }
+  return res_topk;
+}
+
+map<int, float> Counter::run_sparse_vector(){
+  vector<int> queries = Counter::random_query();
+  threshold = this->random_threshold();
+  this->budget = 0;
+  int index;
+  map<int, float> res;
+
+  BOOST_FOREACH (index, queries) {
+    float queried = this->threshold_query(to_string(index), threshold);
+    this->sum_budget(index, queried);
+    if(this->judge_budget()) break;
+    res[index] = queried;
+  }
+  return res;
 }
 
 void Counter::sum_budget(int index, float queried){

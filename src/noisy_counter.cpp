@@ -27,6 +27,34 @@ map<int, float> NoisyCounter::measure(map<int, float> res, float epsilon){
   return measured_dict;
 }
 
+map<int, float> NoisyCounter::measure_rnam_w_free_gap(map<int, float> res, float epsilon){
+  pair<int, float> temp;
+  map<int, float> measured_dict;
+
+  BOOST_FOREACH (temp, res){
+    float measured = this->query(to_string(temp.first));
+    measured_dict[temp.first] = measured;
+  }
+
+  float alpha = 0;
+  float p = 0;
+  vector<float> ps;
+  ps.push_back(0);
+
+  for(int i=1; i<=k; i++){
+    alpha += measured_dict[queries[i-1]];
+    p += (k-i)*res[queries[i-1]];
+    ps.push_back(ps[i-1] + res[queries[i-1]]);
+  }
+
+  float lambda = 1;
+  map<int, float> beta;
+  for(int i=1; i<=k; i++){
+    beta[queries[i-1]] = (alpha + lambda * k * measured_dict[queries[i-1]] + p - k * ps[i-1])/((1+lambda)*k);
+  }
+  return beta;
+}
+
 map<int, float> NoisyCounter::measure_w_free_gap(map<int, float> res, float epsilon){
   pair<int, float> temp;
 
