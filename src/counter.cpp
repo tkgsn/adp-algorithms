@@ -14,8 +14,14 @@ void Counter::loadHist(string dataname){
       hist[tmp] += 1;
     }
   }
-  sorted = arg_sort(hist);
   size = max_index(hist);
+  for(int i=0; i<size; i++){
+    if(hist.count(to_string(i)) == 0){
+      hist[to_string(i)] = 0;
+    }
+  }
+
+  sorted = arg_sort(hist);
 
   for(int i=0; i<size; i++){
     queries.push_back(i);
@@ -44,10 +50,13 @@ vector<int> Counter::random_query(){
 }
 
 int Counter::random_threshold(){
-  uniform_int_distribution<> uni_dis(2 * k, 8 * k);
+  uniform_int_distribution<> uni_dis(k, 2 * k);
   int sampled = uni_dis(e);
   choosed_k = sampled;
-  return hist[sorted[sampled]];
+  if(choosed_k >= size){
+    choosed_k = size-1;
+  }
+  return hist[sorted[choosed_k]];
 }
 
 map<int, float> Counter::report_noisy_k_max(){
@@ -79,10 +88,9 @@ map<int, float> Counter::run_sparse_vector(){
   vector<int> queries = Counter::random_query();
   threshold = this->random_threshold();
   this->budget = 0;
-  int index;
   map<int, float> res;
 
-  BOOST_FOREACH (index, queries) {
+  BOOST_FOREACH (int index, queries) {
     float queried = this->threshold_query(to_string(index), threshold);
     this->sum_budget(index, queried);
     if(this->judge_budget()) break;
@@ -123,8 +131,8 @@ float Counter::evaluate_precision(map<int, float> res){
       continue;
     }
     counter += 1;
-    if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
-    //if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
+    //if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+    if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
       right_counter += 1;
     }
   }
@@ -139,8 +147,8 @@ float Counter::evaluate_recall(map<int, float> res){
     if (temp.second == -1 || temp.second == 0) {
       continue;
     }
-    if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
-    //if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
+    //if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+    if( find(sorted.begin(), sorted.begin() + k, to_string(temp.first)) != sorted.begin() + k ){
       right_counter += 1;
     }
   }

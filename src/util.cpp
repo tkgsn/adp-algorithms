@@ -19,7 +19,7 @@ int max_index(map<string,int> dict){
     int max_value = 0;
 
     BOOST_FOREACH (me, dict) {
-        int value = stoi(me.first);
+        int value = std::stoi(me.first);
         if(value > max_value){
             max_value = value;
         }
@@ -60,10 +60,19 @@ std::function<float(default_random_engine&)> make_laplace(float epsilon, int k){
     return f;
 }
 
+
 std::function<float(default_random_engine&)> make_onesided_laplace(float epsilon, int k){
-    boost::random::laplace_distribution<> laplace = boost::random::laplace_distribution<>(0, k / epsilon);
+    boost::random::exponential_distribution<> laplace = boost::random::exponential_distribution<>(epsilon/k);
     std::function<float(default_random_engine&)> f = [=](default_random_engine& gen){
-        return std::abs(laplace(gen));
+        return laplace(gen);
         };
     return f;
 }
+
+// std::function<float(default_random_engine&)> make_onesided_laplace(float epsilon, int k){
+//     boost::random::laplace_distribution<> laplace = boost::random::laplace_distribution<>(0, k / epsilon);
+//     std::function<float(default_random_engine&)> f = [=](default_random_engine& gen){
+//         return std::abs(laplace(gen));
+//         };
+//     return f;
+// }

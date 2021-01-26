@@ -27,7 +27,7 @@ public:
         laplace_threshold = make_laplace(epsilon_threshold, 1);
     };
     virtual map<int, float> measure(map<int, float>, float);
-    map<int, float> measure_w_free_gap(map<int, float>, float);
+    virtual map<int, float> measure_w_free_gap(map<int, float>, float);
     map<int, float> measure_rnam_w_free_gap(map<int, float>, float);
     float query(string) override;
     float threshold_query(string, float) override;

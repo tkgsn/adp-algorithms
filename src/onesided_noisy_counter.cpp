@@ -18,7 +18,7 @@ map<int, float> OnesidedNoisyCounter::measure_rnam_w_free_gap(map<int, float> re
 
   BOOST_FOREACH (temp, res){
     float epsilon = this->epsilon_query;
-    measured_dict[temp.first] = temp.second - ( 1 / epsilon );
+    measured_dict[temp.first] = temp.second - ( k / epsilon );
   }
 
   return measured_dict;

@@ -17,6 +17,7 @@ public:
     };
     int random_threshold() override;
     map<int, float> measure(map<int, float>, float) override;
+    map<int, float> measure_w_free_gap(map<int, float>, float) override;
 };
 
 #endif
