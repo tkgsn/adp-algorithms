@@ -31,6 +31,7 @@ void run_rnam(string mec, string alg, string db, float epsilon, int k=100){
 		nlohmann::json in_j;
 		map<int, float> res = counter.report_noisy_k_max();
 		map<int, float> measured = counter.measure_rnam_w_free_gap(res, epsilon);
+		vector<string> sorted_res = arg_sort_result(res);
 
 		float error = counter.compute_mean_squared_error(measured);
 		float precision = counter.evaluate_precision(res);
@@ -46,7 +47,7 @@ void run_rnam(string mec, string alg, string db, float epsilon, int k=100){
 		in_j["error"] = error;
 		in_j["precision"] = precision;
 		in_j["recall"] = recall;
-		in_j["f1_value"] = f_value;
+		in_j["f_value"] = f_value;
 
 		out_j[to_string(i)] = in_j;
 	}
@@ -57,7 +58,7 @@ void run_rnam(string mec, string alg, string db, float epsilon, int k=100){
 
 template<class COUNTER>
 void run_svt(string mec, string alg, string db, float epsilon, int k=15){
-	tuple<float, float, float, float, float> t;
+	tuple<float, float, float, float, float, float> t;
 
 	float ratio_of_bigger_epsilon = 0.5;
 	float epsilon_for_svt;
@@ -74,11 +75,14 @@ void run_svt(string mec, string alg, string db, float epsilon, int k=15){
 	counter.loadHist(db);
 	nlohmann::json out_j;
 
+	cout << "epsilon" << "\t" << "i" << ":\t" << "error" << "\t" << "accuracy" << "\t" << "precision" << "\t" << "recall" << "\t" << "f_value" << endl;
+
 	for(int i=0; i<n_iter; i++){
 
 		nlohmann::json in_j;
 
 		map<int, float> res = counter.run_sparse_vector();
+		vector<string> sorted_res = arg_sort_result(res);
 		map<int, float> measured = counter.measure(res, epsilon_for_measure);
 		map<int, float> measured_w_free_gap = counter.measure_w_free_gap(res, epsilon_for_measure);
 		
@@ -87,20 +91,23 @@ void run_svt(string mec, string alg, string db, float epsilon, int k=15){
 		float precision = counter.evaluate_precision(res);
 		float recall = counter.evaluate_recall(res);
 		float f_value = counter.evaluate_f_value(res);
+		float accuracy = counter.evaluate_accuracy(sorted_res);
 
-		cout << epsilon << "\t" << i << ":\t" << error << "\t" << precision << "\t" << recall << "\t" << f_value << endl;
+		cout << epsilon << "\t" << i << ":\t" << error << "\t" << accuracy << "\t" << precision << "\t" << recall << "\t" << f_value << endl;
 
 		std::get<0>(t) += precision / n_iter;
 		std::get<1>(t) += recall / n_iter;
 		std::get<2>(t) += f_value / n_iter;
 		std::get<3>(t) += error / n_iter;
 		std::get<4>(t) += error_w_free_gap / n_iter;
+		std::get<5>(t) += accuracy / n_iter;
 
 		in_j["error"] = error_w_free_gap;
 		in_j["error_"] = error;
 		in_j["precision"] = precision;
 		in_j["recall"] = recall;
 		in_j["f_value"] = f_value;
+		in_j["accuracy"] = accuracy;
 
 		out_j[to_string(i)] = in_j;
 	}
@@ -132,7 +139,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	const std::vector<int> ks{10, 50, 200, 500};
+	const std::vector<int> ks{10, 50, 100, 200, 500};
 	float epsilon = 0.5;
 	BOOST_FOREACH(int k, ks){
 		if (mec == "svt"){

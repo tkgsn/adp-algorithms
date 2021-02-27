@@ -47,6 +47,7 @@ public:
     float evaluate_precision(map<int, float>);
     float evaluate_recall(map<int, float>);
     float evaluate_f_value(map<int, float>);
+    float evaluate_accuracy(vector<string>);
 };
 
 #endif

@@ -139,6 +139,24 @@ float Counter::evaluate_precision(map<int, float> res){
   return float(right_counter) / counter ;
 }
 
+float Counter::evaluate_accuracy(vector<string> sorted_result){
+  string temp;
+  int counter = 0;
+  int right_counter = 0;
+
+  BOOST_FOREACH (temp, sorted_result){
+    //if( find(sorted.begin(), sorted.begin() + choosed_k, to_string(temp.first)) != sorted.begin() + choosed_k ){
+    if( find(sorted.begin(), sorted.begin() + k, temp) != sorted.begin() + k ){
+      right_counter += 1;
+    }
+    counter += 1;
+    if(counter == k){
+      break;
+    }
+  }
+  return float(right_counter) / counter ;
+}
+
 float Counter::evaluate_recall(map<int, float> res){
   pair<int, float> temp;
   int right_counter = 0;
@@ -152,7 +170,7 @@ float Counter::evaluate_recall(map<int, float> res){
       right_counter += 1;
     }
   }
-  return float(right_counter) / choosed_k;
+  return float(right_counter) / k;
 }
 
 float Counter::evaluate_f_value(map<int, float> res){

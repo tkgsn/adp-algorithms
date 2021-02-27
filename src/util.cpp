@@ -40,6 +40,18 @@ vector<string> arg_sort(map<string, int> dict){
     return indices;
 }
 
+vector<string> arg_sort_result(map<int, float> dict){
+    pair<int, float> me;
+    vector<string> indices;
+
+    BOOST_FOREACH (me, dict) {
+        indices.push_back(to_string(me.first));
+    }
+
+    sort(indices.begin(), indices.end(), [&dict](string i1, string i2){return dict[stoi(i1)] > dict[stoi(i2)];});
+    return indices;
+}
+
 pair<float, float> split_epsilon(float epsilon, int k){
     float theta = 1. / (1 + std::pow(k, 2./3.));
     return make_pair(epsilon * theta, epsilon * (1 - theta));

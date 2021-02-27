@@ -11,6 +11,7 @@ using namespace std;
 
 int max_index(map<string,int>);
 vector<string> arg_sort(map<string, int>);
+vector<string> arg_sort_result(map<int, float>);
 pair<float, float> split_epsilon(float, int);
 std::function<float(default_random_engine&)> make_onesided_laplace(float, int);
 std::function<float(default_random_engine&)> make_laplace(float, int);
