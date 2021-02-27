@@ -19,17 +19,16 @@ T40I10D100K: http://fimi.uantwerpen.be/data/
 
 # Install
 
-`pip install pathlib`
+The codes were implemnted by C++11 using boost library and Python 3.7.
 
-# How to UnitTest
 
-This uses googletest for UnitTest. Googletest requires cmake to install it.
+# Run
 
 ```
-git clone https://github.com/google/googletest.git
-cd googletest
-mkdir build
-cd build
-cmake ..
-make
+./download_dataset.sh
+python data_process.py
+./run_rnm.sh
+./run_svt.sh
 ```
+
+You can show the figures in the paper by running plot.ipynb.
