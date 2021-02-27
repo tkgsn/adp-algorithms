@@ -6,7 +6,7 @@ The codes were implemnted by C++11 using boost and JSON library and Python 3.7.
 
 Json library: https://github.com/nlohmann/json
 
-# Dataset
+# Datasets
 
 kosarak: http://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
 
