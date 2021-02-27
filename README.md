@@ -1,8 +1,10 @@
-# svtwgap
+# ADP-algorithms
 
-This uses the JSON library: https://github.com/nlohmann/json
+This is the implementation of the adaptive sparse vector technique and the report noisy max algorithm.
 
-The codes were implemnted by C++11 using boost library and Python 3.7.
+The codes were implemnted by C++11 using boost and JSON library and Python 3.7.
+
+Json library: https://github.com/nlohmann/json
 
 # Dataset
 
