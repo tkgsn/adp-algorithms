@@ -1,6 +1,7 @@
 # svtwgap
 
 This uses the JSON library: https://github.com/nlohmann/json
+The codes were implemnted by C++11 using boost library and Python 3.7.
 
 # Dataset
 
@@ -15,11 +16,6 @@ BMS-POS: https://www.kdd.org/kdd-cup/view/kdd-cup-2000
 T40I10D100K: http://fimi.uantwerpen.be/data/
 
 (direct): http://fimi.uantwerpen.be/data/T40I10D100K.dat
-
-
-# Install
-
-The codes were implemnted by C++11 using boost library and Python 3.7.
 
 
 # Run
