@@ -30,7 +30,7 @@ class Map(MapProcessor):
         return [self.min_x + (self.max_x-self.min_x)*coord[0]/self.n_x_lattice, self.min_y + (self.max_y-self.min_y)*coord[1]/self.n_y_lattice]
     
     def find_nearest_states(self, coords):
-        return [self._find_nearest_state(coord) for coord in coords]
+        return [self.find_nearest_state(coord) for coord in coords]
             
     def make_set_of_connected_states(self, graph_mat):
         G = nx.Graph()
@@ -82,7 +82,7 @@ class Map(MapProcessor):
             
         self.areas = areas
         
-    def _find_nearest_state(self, coord):
+    def find_nearest_state(self, coord):
         coord = np.array([self.n_x_lattice, self.n_y_lattice]) * (np.array([coord[0], coord[1]]) - np.array([self.min_x, self.min_y])) / (np.array([self.max_x - self.min_x, self.max_y - self.min_y]))
         state = int(self.coord_to_state([round(coord[0]), round(coord[1])]))
         return state
