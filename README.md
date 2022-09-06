@@ -28,6 +28,7 @@ T40I10D100K: http://fimi.uantwerpen.be/data/
 python data_process.py
 ./run_rnm.sh
 ./run_svt.sh
+./run.sh
 ```
 
 You can show the figures in the paper by running plot.ipynb.
